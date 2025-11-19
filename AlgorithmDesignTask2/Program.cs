@@ -10,6 +10,8 @@ public class Program
 
         string? algorithm = null;
         string? heuristicName = null;
+        double? coolingK = null;
+        int experimentCount = 20;
 
         for (int i = 0; i < args.Length; i++)
         {
@@ -22,6 +24,14 @@ public class Program
                 case "-h":
                 case "--heuristic":
                     if (i + 1 < args.Length) heuristicName = args[++i].ToLower();
+                    break;
+                case "-k":
+                case "--cooling":
+                    if (i + 1 < args.Length && double.TryParse(args[++i], out double k)) coolingK = k;
+                    break;
+                case "-c":
+                case "--count":
+                    if (i + 1 < args.Length && int.TryParse(args[++i], out int c)) experimentCount = c;
                     break;
                 case "--help":
                     PrintUsage();
@@ -36,8 +46,12 @@ public class Program
             return;
         }
 
+        if (coolingK.HasValue && algorithm != "anneal")
+        {
+            Console.WriteLine("Warning: Cooling coefficient (-k) is ignored for algorithms other than 'anneal'.");
+        }
+
         int n = 8;
-        int experimentCount = 20;
         var initialStates = new List<State>();
         for (int i = 0; i < experimentCount; i++) initialStates.Add(new State(n));
 
@@ -45,7 +59,9 @@ public class Program
         switch (algorithm)
         {
             case "astar": solver = new AStarSolver(); break;
-            case "anneal": solver = new SimulatedAnnealingSolver(); break;
+            case "anneal": 
+                solver = new SimulatedAnnealingSolver(coolingK ?? 0.01); 
+                break;
             default:
                 Console.WriteLine($"Unknown algorithm: {algorithm}");
                 PrintUsage();
@@ -64,6 +80,8 @@ public class Program
         }
 
         string configName = $"{algorithm.ToUpper()} ({heuristicName})";
+        if (algorithm == "anneal") configName += $" [K={coolingK ?? 0.01}]";
+        
         RunSeries(configName, solver, heuristic, initialStates);
         
         Console.WriteLine("\nDone.");
@@ -72,12 +90,14 @@ public class Program
     private static void PrintUsage()
     {
         Console.WriteLine("\nUsage:");
-        Console.WriteLine("  dotnet run -- -a <algorithm> -h <heuristic>");
+        Console.WriteLine("  dotnet run -- -a <algorithm> -h <heuristic> [-k <cooling_coeff>] [-c <count>]");
         Console.WriteLine("\nOptions:");
         Console.WriteLine("  -a, --algorithm   astar | anneal");
         Console.WriteLine("  -h, --heuristic   f2 | custom");
+        Console.WriteLine("  -k, --cooling     Cooling coefficient (default 0.01). Only for anneal.");
+        Console.WriteLine("  -c, --count       Number of experiments (default 20).");
         Console.WriteLine("\nExample:");
-        Console.WriteLine("  dotnet run -- -a astar -h f2");
+        Console.WriteLine("  dotnet run -- -a anneal -h custom -k 0.001 -c 50");
     }
 
     private static void RunSeries(string name, ISolver solver, Func<State, int> heuristic, List<State> initialStates)

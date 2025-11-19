@@ -2,7 +2,12 @@ namespace AlgorithmDesignTask2;
 
 public class SimulatedAnnealingSolver : ISolver
 {
-    private const double K = 0.01;
+    private readonly double _k;
+
+    public SimulatedAnnealingSolver(double k = 0.01)
+    {
+        _k = k;
+    }
 
     public SearchResult Solve(State initialState, Func<State, int> heuristic)
     {
@@ -36,7 +41,7 @@ public class SimulatedAnnealingSolver : ISolver
                 return result;
             }
 
-            double T = 1000.0 - K * t;
+            double T = 1000.0 - _k * t;
             
             if (T <= 0)
             {
