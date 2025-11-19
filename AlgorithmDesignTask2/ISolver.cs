@@ -13,5 +13,5 @@ public class SearchResult
 
 public interface ISolver
 {
-    SearchResult Solve(State initialState, Func<State, int> heuristic);
+    SearchResult Solve(State initialState, Func<State, int> heuristic, bool debug = false);
 }

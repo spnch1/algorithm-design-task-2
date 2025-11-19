@@ -12,6 +12,7 @@ public class Program
         string? heuristicName = null;
         double? coolingK = null;
         int experimentCount = 20;
+        bool debug = false;
 
         for (int i = 0; i < args.Length; i++)
         {
@@ -32,6 +33,10 @@ public class Program
                 case "-c":
                 case "--count":
                     if (i + 1 < args.Length && int.TryParse(args[++i], out int c)) experimentCount = c;
+                    break;
+                case "-d":
+                case "--debug":
+                    debug = true;
                     break;
                 case "--help":
                     PrintUsage();
@@ -82,7 +87,7 @@ public class Program
         string configName = $"{algorithm.ToUpper()} ({heuristicName})";
         if (algorithm == "anneal") configName += $" [K={coolingK ?? 0.01}]";
         
-        RunSeries(configName, solver, heuristic, initialStates);
+        RunSeries(configName, solver, heuristic, initialStates, debug);
         
         Console.WriteLine("\nDone.");
     }
@@ -90,17 +95,18 @@ public class Program
     private static void PrintUsage()
     {
         Console.WriteLine("\nUsage:");
-        Console.WriteLine("  dotnet run -- -a <algorithm> -h <heuristic> [-k <cooling_coeff>] [-c <count>]");
+        Console.WriteLine("  dotnet run -- -a <algorithm> -h <heuristic> [-k <cooling_coeff>] [-c <count>] [-d]");
         Console.WriteLine("\nOptions:");
         Console.WriteLine("  -a, --algorithm   astar | anneal");
         Console.WriteLine("  -h, --heuristic   f2 | custom");
         Console.WriteLine("  -k, --cooling     Cooling coefficient (default 0.01). Only for anneal.");
         Console.WriteLine("  -c, --count       Number of experiments (default 20).");
+        Console.WriteLine("  -d, --debug       Enable debug mode (verbose output).");
         Console.WriteLine("\nExample:");
-        Console.WriteLine("  dotnet run -- -a anneal -h custom -k 0.001 -c 50");
+        Console.WriteLine("  dotnet run -- -a anneal -h custom -k 0.001 -c 1 -d");
     }
 
-    private static void RunSeries(string name, ISolver solver, Func<State, int> heuristic, List<State> initialStates)
+    private static void RunSeries(string name, ISolver solver, Func<State, int> heuristic, List<State> initialStates, bool debug)
     {
         Console.WriteLine($"\n--- Running Series: {name} ---");
         
@@ -117,7 +123,7 @@ public class Program
         for (int i = 0; i < initialStates.Count; i++)
         {
             var startState = initialStates[i];
-            var result = solver.Solve(startState, heuristic);
+            var result = solver.Solve(startState, heuristic, debug);
 
             totalSteps += result.Steps;
             totalDeadEnds += result.DeadEnds;

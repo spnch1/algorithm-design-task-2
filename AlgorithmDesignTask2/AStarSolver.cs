@@ -2,7 +2,7 @@ namespace AlgorithmDesignTask2;
 
 public class AStarSolver : ISolver
 {
-    public SearchResult Solve(State initialState, Func<State, int> heuristic)
+    public SearchResult Solve(State initialState, Func<State, int> heuristic, bool debug = false)
     {
         var result = new SearchResult();
         var startTime = DateTime.Now;
@@ -28,6 +28,12 @@ public class AStarSolver : ISolver
             
             State current = openSet.Dequeue();
             
+            if (debug)
+            {
+                Console.WriteLine($"\nStep: {gScore[current]}, H: {heuristic(current)}, F: {gScore[current] + heuristic(current)}");
+                current.PrintBoard();
+            }
+
             if (heuristic(current) == 0)
             {
                 result.Success = true;

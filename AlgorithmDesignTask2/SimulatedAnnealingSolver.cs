@@ -9,7 +9,7 @@ public class SimulatedAnnealingSolver : ISolver
         _k = k;
     }
 
-    public SearchResult Solve(State initialState, Func<State, int> heuristic)
+    public SearchResult Solve(State initialState, Func<State, int> heuristic, bool debug = false)
     {
         var result = new SearchResult();
         var startTime = DateTime.Now;
@@ -31,6 +31,14 @@ public class SimulatedAnnealingSolver : ISolver
                 result.Steps = t;
                 break;
             }
+            
+            double T = 1000.0 - _k * t;
+            
+            if (debug)
+            {
+                Console.WriteLine($"\nIter: {t}, T: {T:F4}, H: {currentH}, BestH: {bestH}");
+                current.PrintBoard();
+            }
 
             if (currentH == 0)
             {
@@ -41,8 +49,6 @@ public class SimulatedAnnealingSolver : ISolver
                 return result;
             }
 
-            double T = 1000.0 - _k * t;
-            
             if (T <= 0)
             {
                 result.DeadEnds++;
