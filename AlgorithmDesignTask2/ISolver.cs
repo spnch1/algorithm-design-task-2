@@ -4,7 +4,8 @@ public class SearchResult
 {
     public bool Success { get; set; }
     public State? Solution { get; set; }
-    public int Steps { get; set; }
+    public int Iterations { get; set; }
+    public int SolutionDepth { get; set; }
     public int GeneratedStates { get; set; }
     public int MaxMemoryStates { get; set; }
     public int DeadEnds { get; set; }

@@ -15,6 +15,7 @@ public class AStarSolver : ISolver
         openSet.Enqueue(initialState, heuristic(initialState));
         
         int maxMemory = 0;
+        int iterations = 0;
 
         while (openSet.Count > 0)
         {
@@ -27,11 +28,13 @@ public class AStarSolver : ISolver
             if (currentMemory > maxMemory) maxMemory = currentMemory;
             
             State current = openSet.Dequeue();
+            iterations++;
             
             if (debug)
             {
                 Console.WriteLine($"--- DEBUG MODE (A*) ---");
-                Console.WriteLine($"Step (G): {gScore[current]}");
+                Console.WriteLine($"Iteration: {iterations}");
+                Console.WriteLine($"Depth (G): {gScore[current]}");
                 Console.WriteLine($"Heuristic (H): {heuristic(current)}");
                 Console.WriteLine($"Total Cost (F): {gScore[current] + heuristic(current)}");
                 Console.WriteLine($"Open Set: {openSet.Count}, Closed Set: {closedSet.Count}");
@@ -39,7 +42,7 @@ public class AStarSolver : ISolver
                 
                 current.PrintBoard();
 
-                Console.WriteLine("Press ENTER to continue, 'S' to skip debug...");
+                Console.WriteLine("Press any key to continue, 'S' to skip debug...");
                 var key = Console.ReadKey(true);
                 if (key.Key == ConsoleKey.S)
                 {
@@ -52,7 +55,8 @@ public class AStarSolver : ISolver
             {
                 result.Success = true;
                 result.Solution = current;
-                result.Steps = gScore[current];
+                result.SolutionDepth = gScore[current];
+                result.Iterations = iterations;
                 result.MaxMemoryStates = maxMemory;
                 result.TimeElapsedSeconds = (DateTime.Now - startTime).TotalSeconds;
                 return result;

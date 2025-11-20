@@ -28,7 +28,8 @@ public class SimulatedAnnealingSolver : ISolver
         {
             if ((DateTime.Now - startTime).TotalMinutes >= 30)
             {
-                result.Steps = t;
+                result.Iterations = t;
+                result.SolutionDepth = 0;
                 break;
             }
             
@@ -45,7 +46,7 @@ public class SimulatedAnnealingSolver : ISolver
 
                 current.PrintBoard();
 
-                Console.WriteLine("Press ENTER to continue, 'S' to skip debug...");
+                Console.WriteLine("Press any key to continue, 'S' to skip debug...");
                 var key = Console.ReadKey(true);
                 if (key.Key == ConsoleKey.S)
                 {
@@ -58,7 +59,8 @@ public class SimulatedAnnealingSolver : ISolver
             {
                 result.Success = true;
                 result.Solution = current;
-                result.Steps = t;
+                result.Iterations = t;
+                result.SolutionDepth = 0;
                 result.TimeElapsedSeconds = (DateTime.Now - startTime).TotalSeconds;
                 return result;
             }
@@ -66,7 +68,8 @@ public class SimulatedAnnealingSolver : ISolver
             if (T <= 0)
             {
                 result.DeadEnds++;
-                result.Steps = t;
+                result.Iterations = t;
+                result.SolutionDepth = 0;
                 break; 
             }
 

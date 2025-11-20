@@ -110,36 +110,39 @@ public class Program
     {
         Console.WriteLine($"\n--- Running Series: {name} ---");
         
-        double totalSteps = 0;
+        double totalDepth = 0;
+        double totalIterations = 0;
         double totalDeadEnds = 0;
         double totalGenerated = 0;
         double totalMemory = 0;
         double totalTime = 0;
         int successCount = 0;
 
-        Console.WriteLine($"{"Exp",-5} | {"Status",-10} | {"Steps",-10} | {"Gen",-10} | {"Mem",-10} | {"Time(s)",-10}");
-        Console.WriteLine(new string('-', 70));
+        Console.WriteLine($"{"Exp",-5} | {"Status",-10} | {"Depth",-10} | {"Iter",-10} | {"Gen",-10} | {"Mem",-10} | {"Time(s)",-10}");
+        Console.WriteLine(new string('-', 85));
 
         for (int i = 0; i < initialStates.Count; i++)
         {
             var startState = initialStates[i];
             var result = solver.Solve(startState, heuristic, debug);
 
-            totalSteps += result.Steps;
+            totalDepth += result.SolutionDepth;
+            totalIterations += result.Iterations;
             totalDeadEnds += result.DeadEnds;
             totalGenerated += result.GeneratedStates;
             totalMemory += result.MaxMemoryStates;
             totalTime += result.TimeElapsedSeconds;
             if (result.Success) successCount++;
 
-            Console.WriteLine($"{i+1,-5} | {(result.Success ? "Solved" : "Fail"),-10} | {result.Steps,-10} | {result.GeneratedStates,-10} | {result.MaxMemoryStates,-10} | {result.TimeElapsedSeconds,-10:F4}");
+            Console.WriteLine($"{i+1,-5} | {(result.Success ? "Solved" : "Fail"),-10} | {result.SolutionDepth,-10} | {result.Iterations,-10} | {result.GeneratedStates,-10} | {result.MaxMemoryStates,-10} | {result.TimeElapsedSeconds,-10:F4}");
         }
 
         int n = initialStates.Count;
-        Console.WriteLine(new string('-', 70));
+        Console.WriteLine(new string('-', 85));
         Console.WriteLine($"Average Stats for {name}:");
         Console.WriteLine($"  Success Rate: {successCount}/{n}");
-        Console.WriteLine($"  Avg Steps:    {totalSteps / n:F2}");
+        Console.WriteLine($"  Avg Depth:    {totalDepth / n:F2}");
+        Console.WriteLine($"  Avg Iter:     {totalIterations / n:F2}");
         Console.WriteLine($"  Avg DeadEnds: {totalDeadEnds / n:F2}");
         Console.WriteLine($"  Avg Gen:      {totalGenerated / n:F2}");
         Console.WriteLine($"  Avg Memory:   {totalMemory / n:F2}");
