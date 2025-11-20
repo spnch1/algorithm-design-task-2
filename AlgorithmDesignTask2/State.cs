@@ -97,7 +97,7 @@ public class State : IEquatable<State>
                 if (Queens[c] == r)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write("Q ");
+                    Console.Write("QQ");
                 }
                 else
                 {
