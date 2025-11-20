@@ -36,8 +36,22 @@ public class SimulatedAnnealingSolver : ISolver
             
             if (debug)
             {
-                Console.WriteLine($"\nIter: {t}, T: {T:F4}, H: {currentH}, BestH: {bestH}");
+                Console.WriteLine($"--- DEBUG MODE (Simulated Annealing) ---");
+                Console.WriteLine($"Iteration: {t}");
+                Console.WriteLine($"Temperature: {T:F4}");
+                Console.WriteLine($"Current H: {currentH}");
+                Console.WriteLine($"Best H: {bestH}");
+                Console.WriteLine();
+
                 current.PrintBoard();
+
+                Console.WriteLine("Press ENTER to continue, 'S' to skip debug...");
+                var key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.S)
+                {
+                    debug = false;
+                    Console.WriteLine("Debug mode disabled. Finishing run...");
+                }
             }
 
             if (currentH == 0)

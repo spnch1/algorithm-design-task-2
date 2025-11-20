@@ -85,14 +85,29 @@ public class State : IEquatable<State>
     
     public void PrintBoard()
     {
+        Console.WriteLine("   " + string.Join(" ", Enumerable.Range(0, N).Select(i => i.ToString())));
         for (int r = 0; r < N; r++)
         {
+            Console.Write($"{r,2} ");
             for (int c = 0; c < N; c++)
             {
-                if (Queens[c] == r) Console.Write("Q ");
-                else Console.Write(". ");
+                if ((r + c) % 2 == 0) Console.BackgroundColor = ConsoleColor.DarkGray;
+                else Console.BackgroundColor = ConsoleColor.Black;
+
+                if (Queens[c] == r)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("Q ");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.Write("  ");
+                }
             }
+            Console.ResetColor();
             Console.WriteLine();
         }
+        Console.WriteLine();
     }
 }

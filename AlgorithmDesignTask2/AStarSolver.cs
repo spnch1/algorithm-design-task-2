@@ -30,8 +30,22 @@ public class AStarSolver : ISolver
             
             if (debug)
             {
-                Console.WriteLine($"\nStep: {gScore[current]}, H: {heuristic(current)}, F: {gScore[current] + heuristic(current)}");
+                Console.WriteLine($"--- DEBUG MODE (A*) ---");
+                Console.WriteLine($"Step (G): {gScore[current]}");
+                Console.WriteLine($"Heuristic (H): {heuristic(current)}");
+                Console.WriteLine($"Total Cost (F): {gScore[current] + heuristic(current)}");
+                Console.WriteLine($"Open Set: {openSet.Count}, Closed Set: {closedSet.Count}");
+                Console.WriteLine();
+                
                 current.PrintBoard();
+
+                Console.WriteLine("Press ENTER to continue, 'S' to skip debug...");
+                var key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.S)
+                {
+                    debug = false;
+                    Console.WriteLine("Debug mode disabled. Finishing run...");
+                }
             }
 
             if (heuristic(current) == 0)
